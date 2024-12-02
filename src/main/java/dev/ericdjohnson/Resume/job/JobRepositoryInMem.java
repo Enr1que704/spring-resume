@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class JobRepository {
+public class JobRepositoryInMem {
 
     private List<Job> jobs = new ArrayList<>();
 
@@ -18,6 +18,20 @@ public class JobRepository {
 
     Optional<Job> findById(Integer id) {
         return jobs.stream().filter(job -> job.id().equals(id)).findFirst();
+    }
+
+    void create(Job job) {
+        jobs.add(job);
+    }
+
+    void update(Job job, Integer id) {
+        Optional<Job> existingJob = findById(id);
+        existingJob.ifPresent(value -> jobs.set(jobs.indexOf(value), job));
+    }
+
+    void delete(Integer id) {
+        Optional<Job> existingJob = findById(id);
+        existingJob.ifPresent(jobs::remove);
     }
 
     @PostConstruct
